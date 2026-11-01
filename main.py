@@ -45,6 +45,8 @@ async def vercel_path_rewrite(request: Request, call_next):
     subpath = request.query_params.get("__path__")
     if subpath:
         clean = subpath.strip("/").split("?")[0]
+        if clean.startswith("api/"):
+            clean = clean[4:]
         request.scope["path"] = f"/api/{clean}"
     elif request.scope.get("path") == "/api/index.py":
         # Fallback if no subpath
