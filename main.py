@@ -49,6 +49,7 @@ class AnalyzeRequest(BaseModel):
 # =====================================================================
 
 @app.post("/api/analyze")
+@app.post("/analyze")
 async def analyze_topic(req: AnalyzeRequest) -> Dict[str, Any]:
     """Runs the full ScholarScope pipeline synchronously."""
     if not req.topic or not req.topic.strip():
@@ -58,6 +59,7 @@ async def analyze_topic(req: AnalyzeRequest) -> Dict[str, Any]:
 
 
 @app.post("/api/analyze-stream")
+@app.post("/analyze-stream")
 def analyze_topic_stream(req: AnalyzeRequest):
     """Streams real-time per-stage execution events using Server-Sent Events (SSE)."""
     if not req.topic or not req.topic.strip():
@@ -71,6 +73,7 @@ def analyze_topic_stream(req: AnalyzeRequest):
 
 
 @app.get("/api/history")
+@app.get("/history")
 async def fetch_history() -> Dict[str, Any]:
     """Retrieves the last 10 analyses from the Results tab via Apps Script."""
     ok, records, err = get_history(limit=10)
@@ -83,6 +86,7 @@ async def fetch_history() -> Dict[str, Any]:
 
 
 @app.get("/api/tests")
+@app.get("/tests")
 async def fetch_tests() -> Dict[str, Any]:
     """Retrieves test results from the Tests tab via Apps Script."""
     ok, records, err = get_tests_history(limit=50)
@@ -95,6 +99,7 @@ async def fetch_tests() -> Dict[str, Any]:
 
 
 @app.get("/api/prompts")
+@app.get("/prompts")
 async def fetch_prompts() -> Dict[str, Any]:
     """Returns prompt texts and iteration log comparing V1, V2, and V3."""
     return {
@@ -107,6 +112,7 @@ async def fetch_prompts() -> Dict[str, Any]:
 
 
 @app.get("/api/health")
+@app.get("/health")
 async def health_check() -> Dict[str, Any]:
     """Makes a real GET to the webhook and checks key and model reachability."""
     has_gemini_key = bool(get_api_key())
@@ -132,6 +138,8 @@ async def health_check() -> Dict[str, Any]:
 # =====================================================================
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+ROOT_DIR = os.path.dirname(__file__)
+
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
@@ -142,9 +150,12 @@ if os.path.exists(DOCS_DIR):
 @app.get("/")
 async def serve_index():
     """Serves the single-page frontend application."""
-    index_path = os.path.join(STATIC_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
+    for candidate in [
+        os.path.join(ROOT_DIR, "index.html"),
+        os.path.join(STATIC_DIR, "index.html"),
+    ]:
+        if os.path.exists(candidate):
+            return FileResponse(candidate)
     return {
-        "message": "ScholarScope Backend API is running. Place index.html in static/ directory."
+        "message": "ScholarScope Backend API is running."
     }
