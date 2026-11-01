@@ -14,7 +14,7 @@ import os
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -37,6 +37,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Vercel serverless path normalizer
+@app.middleware("http")
+async def vercel_path_rewrite(request: Request, call_next):
+    # Check if Vercel passed the subpath in __path__ query param
+    subpath = request.query_params.get("__path__")
+    if subpath:
+        clean = subpath.strip("/").split("?")[0]
+        request.scope["path"] = f"/api/{clean}"
+    elif request.scope.get("path") == "/api/index.py":
+        # Fallback if no subpath
+        request.scope["path"] = "/"
+    return await call_next(request)
 
 # Request schemas
 class AnalyzeRequest(BaseModel):
@@ -134,30 +147,6 @@ async def health_check() -> Dict[str, Any]:
 
 
 # =====================================================================
-# Debug Fallback for Vercel Serverless Path Discovery
-# =====================================================================
-
-@app.api_route("/api/index.py", methods=["GET", "POST"])
-async def handle_index_py_direct(request: Request):
-    return {
-        "status": "reached /api/index.py directly",
-        "url_path": request.url.path,
-        "headers": dict(request.headers)
-    }
-
-@app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"])
-async def catch_all_fallback(request: Request, full_path: str):
-    return {
-        "status": "unmatched_route",
-        "received_full_path": full_path,
-        "url_path": request.url.path,
-        "scope_path": request.scope.get("path"),
-        "x_vercel_path": request.headers.get("x-matched-path"),
-        "x_forwarded_uri": request.headers.get("x-forwarded-uri")
-    }
-
-
-# =====================================================================
 # Static Files & SPA Routing
 # =====================================================================
 
@@ -174,12 +163,23 @@ if os.path.exists(DOCS_DIR):
 @app.get("/")
 async def serve_index():
     """Serves the single-page frontend application."""
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(cur_dir)
+
     for candidate in [
-        os.path.join(ROOT_DIR, "index.html"),
-        os.path.join(STATIC_DIR, "index.html"),
+        os.path.join(cur_dir, "api", "index.html"),
+        os.path.join(cur_dir, "index.html"),
+        os.path.join(cur_dir, "static", "index.html"),
+        os.path.join(parent_dir, "api", "index.html"),
+        os.path.join(parent_dir, "index.html"),
+        os.path.join(parent_dir, "static", "index.html"),
+        "api/index.html",
+        "index.html",
+        "static/index.html"
     ]:
         if os.path.exists(candidate):
-            return FileResponse(candidate)
-    return {
-        "message": "ScholarScope Backend API is running."
-    }
+            with open(candidate, "r", encoding="utf-8") as f:
+                content = f.read()
+            return HTMLResponse(content=content, status_code=200)
+
+    return HTMLResponse("<h1>ScholarScope</h1><p>UI loading error: index.html not found</p>", status_code=500)
