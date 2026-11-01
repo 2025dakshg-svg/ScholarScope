@@ -12,7 +12,7 @@ Serves static UI files and exposes REST API endpoints:
 import json
 import os
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -130,6 +130,30 @@ async def health_check() -> Dict[str, Any]:
             "reachable": ok_webhook,
             "message": webhook_status_msg
         }
+    }
+
+
+# =====================================================================
+# Debug Fallback for Vercel Serverless Path Discovery
+# =====================================================================
+
+@app.api_route("/api/index.py", methods=["GET", "POST"])
+async def handle_index_py_direct(request: Request):
+    return {
+        "status": "reached /api/index.py directly",
+        "url_path": request.url.path,
+        "headers": dict(request.headers)
+    }
+
+@app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"])
+async def catch_all_fallback(request: Request, full_path: str):
+    return {
+        "status": "unmatched_route",
+        "received_full_path": full_path,
+        "url_path": request.url.path,
+        "scope_path": request.scope.get("path"),
+        "x_vercel_path": request.headers.get("x-matched-path"),
+        "x_forwarded_uri": request.headers.get("x-forwarded-uri")
     }
 
 
