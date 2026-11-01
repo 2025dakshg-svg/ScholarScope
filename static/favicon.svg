@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="ScholarScope Favicon">
+  <defs>
+    <style>
+      :root {
+        --logo-accent: #1F4D3F;
+      }
+      .mark-primary { fill: var(--logo-accent, #1F4D3F); }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --logo-accent: #4FA888;
+        }
+        .mark-primary { fill: var(--logo-accent, #4FA888); }
+      }
+    </style>
+  </defs>
+  <path class="mark-primary" d="M 5 14.5 L 14.5 14.5 L 14.5 5 C 9.25 5 5 9.25 5 14.5 Z" opacity="0.9" />
+  <path class="mark-primary" d="M 17.5 14.5 L 27 14.5 C 27 9.25 22.75 5 17.5 5 L 17.5 14.5 Z" />
+  <path class="mark-primary" d="M 5 17.5 C 5 22.75 9.25 27 14.5 27 L 14.5 17.5 L 5 17.5 Z" opacity="0.75" />
+  <path class="mark-primary" d="M 17.5 17.5 L 17.5 27 C 22.75 27 27 22.75 27 17.5 L 17.5 17.5 Z" opacity="0.95" />
+  <rect class="mark-primary" x="15" y="15" width="2" height="2" transform="rotate(45 16 16)" />
+</svg>
