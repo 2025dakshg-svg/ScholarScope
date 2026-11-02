@@ -11,9 +11,9 @@
 
 ### Core Backend & Orchestration
 1. **`main.py`**
-   - **Line 1:** Serves the FastAPI web server exposing REST and Server-Sent Events (SSE) streaming endpoints.
-   - **Line 2:** Connects incoming HTTP requests (`/api/analyze-stream`, `/api/history`, `/api/health`) directly to pipeline functions.
-   - **Line 3:** Enforces CORS policies and serves static frontend client assets without requiring an external reverse proxy.
+   - **Line 1:** Serves the FastAPI multi-page web server rendering Jinja2 templates across 7 distinct URLs with real page loads.
+   - **Line 2:** Exposes REST API endpoints (`/api/health`, `/api/prompts`, `/api/history`, `/api/tests`) and Server-Sent Events (`/api/analyze-stream`).
+   - **Line 3:** Implements a 60-second in-memory cache for Google Sheets read-backs to ensure sub-10ms page rendering and quota safety.
 
 2. **`pipeline.py`**
    - **Line 1:** Implements the 6-stage linear execution pipeline orchestrating heuristics, LLM calls, and validation.
@@ -88,36 +88,79 @@
 
 ---
 
-### Frontend Client (Vanilla Web Components)
-15. **`static/index.html`**
-    - **Line 1:** Semantic single-page application structure featuring 4 core views: Analyze, History, Prompts, and Tests.
-    - **Line 2:** Contains the accessible topic submission form, live character counter, example topic chips, and stage progress tracker.
-    - **Line 3:** Includes inlined SVG branding and WCAG AAA-compliant ARIA live regions for screen readers.
+### Server-Rendered Jinja2 Templates & Views
+15. **`templates/base.html`**
+    - **Line 1:** Shared master layout containing semantic header, navigation bar with `aria-current="page"`, theme toggle, and mobile drawer.
+    - **Line 2:** Implements the shared academic footer detailing student identity, project affiliation, and live configured model pill.
+    - **Line 3:** Defines `<main id="main">` landmark with accessible skip-to-content anchor and strict autoescape protection.
 
-16. **`static/style.css`**
-    - **Line 1:** Implements the "Warm Editorial" academic design system inspired by prestigious research journals.
-    - **Line 2:** Features a paper-and-forest-green palette (`#F6F3EC` canvas, `#1F4D3F` accent, `#1B1B1A` ink) with full dark mode support.
-    - **Line 3:** Fully responsive layout with fluid grid breakpoints for desktop (1280px), tablet (768px), and mobile (360px).
+16. **`templates/home.html`**
+    - **Line 1:** Landing page with calm academic headline, one-sentence purpose statement, and primary "Analyze a topic" button.
+    - **Line 2:** Displays the real latest validated evaluation from the Google Sheet Results tab (`Validation = Passed`) with score bars and timestamp.
+    - **Line 3:** Outlines the 3-step workflow guide and defines operational boundaries (*"What ScholarScope Does Not Do"*).
 
-17. **`static/app.js`**
-    - **Line 1:** Client-side JavaScript orchestrator with hash-based routing (`#analyze`, `#history`, `#prompts`, `#tests`).
-    - **Line 2:** Consumes Server-Sent Events (SSE) from `/api/analyze-stream` to drive per-stage progress indicators and real timings.
-    - **Line 3:** Renders markdown feasibility reports, interactive score meters, and fetches live history/tests data from backend API routes.
+17. **`templates/analyze.html`**
+    - **Line 1:** Evaluation workspace featuring 300-char max textarea, live character counter, 5 benchmark chips, and segmented version selector.
+    - **Line 2:** Renders real-time Server-Sent Events (SSE) stage progress tracker displaying measured millisecond durations for Stages 0–5.
+    - **Line 3:** Presents verdict badge, total /20, 4 criterion bars, collapsible 3-stage validator panel, and safe Markdown report viewer.
 
-18. **`static/logo.svg`**
-    - **Line 1:** Scalable vector logo featuring a geometric four-quadrant mark symbolizing the 4 rubric pillars.
-    - **Line 2:** Incorporates the font-independent vector path wordmark "ScholarScope" in classic editorial serif.
-    - **Line 3:** Supports automatic theme adaptation via CSS variables and `@media (prefers-color-scheme: dark)`.
+18. **`templates/how_it_works.html`**
+    - **Line 1:** Comprehensive methodology page with vertical cards detailing all 6 pipeline stages and their operational bounds.
+    - **Line 2:** Details the 3 validator sub-stage gates, automatic single-retry correction rule, and degraded mode recovery logic.
+    - **Line 3:** Embeds the high-resolution 300 DPI architecture flowchart (`docs/workflow.png`) for visual reference.
 
-19. **`static/favicon.svg`**
-    - **Line 1:** High-contrast 32x32 SVG browser icon representing the four evaluation pillars surrounding a central axis.
-    - **Line 2:** Includes standalone fallback styling with `var(--logo-accent, #1F4D3F)` and dark mode `#4FA888`.
-    - **Line 3:** Provides crisp rendering in browser tabs across light and dark operating system themes.
+19. **`templates/prompts.html`**
+    - **Line 1:** Prompt engineering catalog presenting monospace blocks for Analysis, V1, V2, V3, and Report prompts with copy buttons.
+    - **Line 2:** Features the complete `PROMPT_LOG` iteration table explaining the evolution rationale from V1 baseline to V3 production.
+    - **Line 3:** Documents the few-shot domain separation technique used in V3 to eliminate benchmark anchor leakage.
 
-20. **`static/logo-preview.html`**
-    - **Line 1:** Interactive visual specification sheet displaying the logo and favicon at 36px, 28px, and 16px scales.
-    - **Line 2:** Demonstrates side-by-side rendering on light paper canvas and warm dark canvas.
-    - **Line 3:** Outlines the design principles and rationale for the external academic viva panel.
+20. **`templates/tests.html`**
+    - **Line 1:** Displays the 5 benchmark test archetypes (T1–T5) with expected behaviors and live runs from the Google Sheet Tests tab.
+    - **Line 2:** Features a prompt architecture evolution comparison matrix (V1 vs V2 vs V3) across 6 engineering dimensions.
+    - **Line 3:** Includes an academic honesty notice and the complete historical execution log of all 18 rows in the Tests tab.
+
+21. **`templates/responsible_ai.html`**
+    - **Line 1:** Details the 4 core ethical pillars: Human-in-the-loop oversight, anti-hallucination citation grounding, and prompt defense.
+    - **Line 2:** Documents the 11-column Google Sheets data schema ensuring full auditability of all evaluations (including rejections).
+    - **Line 3:** Explains why ScholarScope serves as a calibrated decision aid rather than an autonomous research gatekeeper.
+
+22. **`templates/404.html`**
+    - **Line 1:** Dedicated academic custom 404 error template with serif typography, calm navigation links, and home shortcut.
+    - **Line 2:** Returned by FastAPI exception handler for all unmatched web URLs while preserving JSON 404 for `/api/*` endpoints.
+    - **Line 3:** Maintains brand styling, header navigation, and theme consistency even during navigation errors.
+
+---
+
+### Design System & Client Controllers
+23. **`static/css/tokens.css`**
+    - **Line 1:** Declares the "Warm Editorial" design system tokens as CSS variables (colors, typography, 8px spacing grid, radii, shadows).
+    - **Line 2:** Implements light paper canvas (`#F6F3EC`) and warm dark canvas (`#161715`) with WCAG AA-compliant contrast ratios.
+    - **Line 3:** Configures typography variables for Newsreader serif headings, Inter sans-serif interface, and tabular figure numerals.
+
+24. **`static/css/style.css`**
+    - **Line 1:** Global layout stylesheet implementing fluid 12-column grid, responsive breakpoints (360px to 1440px), and card surfaces.
+    - **Line 2:** Styles buttons, badges, academic data tables (`.table-academic`), score meters, segmented version controls, and chips.
+    - **Line 3:** Includes real-time stage progress tracker styling (`.stage-item`, `.stage-active`, `.stage-done`, `.stage-failed`).
+
+25. **`static/css/print.css`**
+    - **Line 1:** Dedicated print stylesheet optimizing feasibility report outputs for academic defense printouts or PDF archiving.
+    - **Line 2:** Hides navigation headers, footers, interactive buttons, and theme toggles during print media rendering.
+    - **Line 3:** Forces high-contrast ink on white paper, expands container width, and applies clean page-break rules.
+
+26. **`static/js/theme.js` & `static/js/nav.js`**
+    - **Line 1:** `theme.js` manages light/dark mode with system `prefers-color-scheme`, manual `localStorage`, and `?theme=` URL support.
+    - **Line 2:** `nav.js` provides accessible mobile navigation drawer toggling with ARIA `aria-expanded` and clean click-outside dismissal.
+    - **Line 3:** Zero external runtime dependencies; executes instantly on DOM content loaded without layout shifts.
+
+27. **`static/js/analyze.js`**
+    - **Line 1:** Client-side controller consuming Server-Sent Events (SSE) via native `fetch()` and `ReadableStream` over `/api/analyze-stream`.
+    - **Line 2:** Updates live stage tracker with real measured execution times and renders score meters, verdict, and validator details.
+    - **Line 3:** Implements a custom, secure Markdown renderer that strictly escapes raw HTML entities first to eliminate XSS vulnerabilities.
+
+28. **`test_routes.py`**
+    - **Line 1:** Automated route and security regression test suite using Starlette's `TestClient`.
+    - **Line 2:** Verifies all 7 HTML routes return HTTP 200, custom 404 returns HTTP 404, static assets return 200, and API returns valid JSON.
+    - **Line 3:** Asserts that backend credentials (`GEMINI_API_KEY`, `APPS_SCRIPT_SECRET`) are never leaked to client responses.
 
 ---
 

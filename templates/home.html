@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}ScholarScope — Calibrated Research Feasibility Analyzer{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1 class="page-title">Calibrated feasibility analysis for undergraduate research proposals.</h1>
+    <p class="page-subtitle">Scores scope, compute resources, literature availability, and measurable outcomes against a 20-point academic rubric with automated validation.</p>
+  </header>
+
+  <!-- Primary Action Area -->
+  <div style="margin-bottom: var(--space-8);">
+    <div class="card card-raised" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
+      <div>
+        <h2 class="card-title" style="margin-bottom: var(--space-1);">Ready to evaluate a topic?</h2>
+        <p class="card-subtitle" style="margin-top: 0;">Automated 6-stage pipeline &bull; Personal laptop &amp; 4-week execution bounds</p>
+      </div>
+      <div>
+        <a href="/analyze" class="btn btn-primary">Analyze a topic</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calm Sheet Error Banner (if connection issue) -->
+  {% if sheet_error %}
+  <div class="alert alert-warning" role="alert">
+    <div>
+      <strong>Google Sheets Notice:</strong> Could not read the Google Sheet: {{ sheet_error }}. The evaluation pipeline remains fully functional.
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Section: Latest Validated Result from Google Sheets -->
+  <section style="margin-bottom: var(--space-10);" aria-labelledby="latest-result-heading">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
+      <h2 id="latest-result-heading" style="font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 600; color: var(--ink);">
+        Latest Validated Evaluation
+      </h2>
+      <span class="badge badge-neutral" style="font-size: var(--text-xs);">Live from Results Sheet</span>
+    </div>
+
+    {% if latest_passed %}
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span style="font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Recorded Analysis</span>
+          <div style="font-size: var(--text-xs); color: var(--muted); margin-top: 2px;">
+            Timestamp: <span class="tabular">{{ latest_passed.timestamp }}</span> &bull; Prompt Version: <strong>{{ latest_passed.version }}</strong>
+          </div>
+        </div>
+        <div>
+          {% if latest_passed.verdict == 'Feasible' %}
+            <span class="badge badge-feasible">Feasible</span>
+          {% elif latest_passed.verdict == 'Needs Refinement' %}
+            <span class="badge badge-refine">Needs Refinement</span>
+          {% elif latest_passed.verdict == 'Not Feasible' %}
+            <span class="badge badge-not-feasible">Not Feasible</span>
+          {% else %}
+            <span class="badge badge-neutral">{{ latest_passed.verdict }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Topic Statement (Escaped, No |safe) -->
+        <div style="padding: var(--space-3) var(--space-4); background-color: var(--surface-subtle); border-left: 3px solid var(--accent); border-radius: var(--radius-xs); margin-bottom: var(--space-6);">
+          <div style="font-size: var(--text-xs); color: var(--muted); margin-bottom: 2px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em;">Evaluated Topic</div>
+          <div style="font-family: var(--font-serif); font-size: var(--text-lg); color: var(--ink); font-weight: 500;">
+            &ldquo;{{ latest_passed.topic }}&rdquo;
+          </div>
+        </div>
+
+        <!-- Score Breakdown Grid -->
+        <div class="grid-12" style="align-items: center; margin-bottom: var(--space-4);">
+          <div class="col-4" style="text-align: center; border-right: 1px solid var(--border-subtle); padding: var(--space-4);">
+            <div style="font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Overall Score</div>
+            <div style="font-family: var(--font-serif); font-size: var(--text-3xl); font-weight: 700; color: var(--ink); margin: var(--space-1) 0;">
+              <span class="tabular">{{ latest_passed.total }}</span> <span style="font-size: var(--text-base); font-weight: 400; color: var(--muted);">/ 20</span>
+            </div>
+            <span class="badge badge-feasible" style="font-size: 11px;">Validation: {{ latest_passed.validation }}</span>
+          </div>
+
+          <div class="col-8" style="padding-left: var(--space-4);">
+            <!-- Scope -->
+            <div class="criterion-row">
+              <span class="criterion-name">Scope</span>
+              <div class="score-bar-track" aria-label="Scope score bar">
+                <div class="score-bar-fill {% if latest_passed.scope|int >= 4 %}fill-high{% elif latest_passed.scope|int == 3 %}fill-mid{% else %}fill-low{% endif %}" style="width: {{ latest_passed.scope_pct }}%;"></div>
+              </div>
+              <span class="score-number tabular">{{ latest_passed.scope }} / 5</span>
+            </div>
+
+            <!-- Resources -->
+            <div class="criterion-row">
+              <span class="criterion-name">Resources</span>
+              <div class="score-bar-track" aria-label="Resources score bar">
+                <div class="score-bar-fill {% if latest_passed.resources|int >= 4 %}fill-high{% elif latest_passed.resources|int == 3 %}fill-mid{% else %}fill-low{% endif %}" style="width: {{ latest_passed.resources_pct }}%;"></div>
+              </div>
+              <span class="score-number tabular">{{ latest_passed.resources }} / 5</span>
+            </div>
+
+            <!-- Sources -->
+            <div class="criterion-row">
+              <span class="criterion-name">Sources</span>
+              <div class="score-bar-track" aria-label="Sources score bar">
+                <div class="score-bar-fill {% if latest_passed.sources|int >= 4 %}fill-high{% elif latest_passed.sources|int == 3 %}fill-mid{% else %}fill-low{% endif %}" style="width: {{ latest_passed.sources_pct }}%;"></div>
+              </div>
+              <span class="score-number tabular">{{ latest_passed.sources }} / 5</span>
+            </div>
+
+            <!-- Outcomes -->
+            <div class="criterion-row">
+              <span class="criterion-name">Outcomes</span>
+              <div class="score-bar-track" aria-label="Outcomes score bar">
+                <div class="score-bar-fill {% if latest_passed.outcomes|int >= 4 %}fill-high{% elif latest_passed.outcomes|int == 3 %}fill-mid{% else %}fill-low{% endif %}" style="width: {{ latest_passed.outcomes_pct }}%;"></div>
+              </div>
+              <span class="score-number tabular">{{ latest_passed.outcomes }} / 5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div>
+          Recorded via Google Apps Script Webhook &bull; Results tab
+        </div>
+        <div>
+          <a href="/history" class="btn btn-ghost btn-sm">View full history &rarr;</a>
+        </div>
+      </div>
+    </div>
+    {% elif not sheet_error %}
+    <!-- Honest Empty State -->
+    <div class="empty-state">
+      <h3 class="empty-state-title">No Validated Results Yet</h3>
+      <p class="empty-state-desc">
+        No analyses with Validation = Passed are currently recorded in the Results sheet. Analyze a topic to populate this live sample result.
+      </p>
+      <div style="margin-top: var(--space-4);">
+        <a href="/analyze" class="btn btn-primary">Run First Analysis</a>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Section: Three Steps -->
+  <section style="margin-bottom: var(--space-10);" aria-labelledby="workflow-steps-heading">
+    <div style="margin-bottom: var(--space-4);">
+      <h2 id="workflow-steps-heading" style="font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 600; color: var(--ink);">
+        How the Feasibility Check Works
+      </h2>
+      <p style="font-size: var(--text-sm); color: var(--muted); margin-top: var(--space-1);">
+        Three clear stages from initial idea to objective evaluation report.
+      </p>
+    </div>
+
+    <div class="grid-12">
+      <!-- Step 1 -->
+      <div class="col-4">
+        <div class="card" style="height: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+            <span style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 700; color: var(--accent);">01</span>
+            <span class="badge badge-neutral">Input</span>
+          </div>
+          <h3 style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600; color: var(--ink); margin-bottom: var(--space-2);">
+            Enter a topic
+          </h3>
+          <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-relaxed); margin: 0;">
+            Submit a concise research title or problem statement (up to 300 characters). Choose calibration version V1, V2, or V3 with personal computer execution constraints.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="col-4">
+        <div class="card" style="height: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+            <span style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 700; color: var(--accent);">02</span>
+            <span class="badge badge-neutral">Pipeline</span>
+          </div>
+          <h3 style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600; color: var(--ink); margin-bottom: var(--space-2);">
+            Check and score
+          </h3>
+          <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-relaxed); margin: 0;">
+            The 6-stage pipeline validates heuristics, tests researchability, evaluates 4 rubric criteria, and runs a programmatic 3-stage validator with single-retry correction.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="col-4">
+        <div class="card" style="height: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+            <span style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 700; color: var(--accent);">03</span>
+            <span class="badge badge-neutral">Output</span>
+          </div>
+          <h3 style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600; color: var(--ink); margin-bottom: var(--space-2);">
+            Read the report
+          </h3>
+          <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-relaxed); margin: 0;">
+            Review dimensional scores, verdict classification, and calibrated recommendations. Copy or download the full structured report formatted in academic Markdown.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: What It Will Not Do (Decision Aid Boundary) -->
+  <section style="margin-bottom: var(--space-8);" aria-labelledby="boundary-heading">
+    <div class="card" style="border-left: 3px solid var(--accent); background-color: var(--surface-raised);">
+      <h3 id="boundary-heading" style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600; color: var(--ink); margin-bottom: var(--space-2);">
+        Operational Boundaries &bull; What ScholarScope Does Not Do
+      </h3>
+      <p style="font-size: var(--text-sm); color: var(--ink-secondary); line-height: var(--leading-relaxed); margin: 0; max-width: var(--line-length);">
+        <strong>ScholarScope is a feasibility decision aid, not an autonomous research agent.</strong> It evaluates whether a proposed topic is achievable under specific undergraduate constraints (4 weeks timeline, personal laptop compute, and open-access literature). It does <em>not</em> verify the scientific correctness or empirical truth of published papers, check plagiarism, write thesis literature reviews, synthesize code, or guarantee academic committee approval. Human advisor oversight is required before project commencement.
+      </p>
+    </div>
+  </section>
+</div>
+{% endblock %}

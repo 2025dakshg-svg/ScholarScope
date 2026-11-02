@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Prompt Library & Iteration Log — ScholarScope{% endblock %}
+
+{% block meta_description %}Evolution of ScholarScope prompts from zero-shot baseline (V1) to structured persona (V2) to production-grade rubric calibration (V3).{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1 class="page-title">Prompt Engineering & Evolution Library</h1>
+    <p class="page-subtitle">Iterative development across V1, V2, and V3 prompts, documenting explicit constraints, anti-injection defenses, and failure mode mitigation.</p>
+  </header>
+
+  <!-- Prompt Iteration Log Table -->
+  <section aria-labelledby="iteration-log-heading" style="margin-bottom: var(--space-8);">
+    <h2 id="iteration-log-heading" class="section-title">Prompt Iteration History</h2>
+    <p class="section-desc">Comparison of techniques, architectural changes, and observed empirical failure modes across prompt versions.</p>
+
+    <div class="table-responsive">
+      <table class="table-academic">
+        <thead>
+          <tr>
+            <th style="width: 70px;">Ver.</th>
+            <th style="width: 170px;">Name</th>
+            <th style="width: 220px;">Techniques</th>
+            <th>Key Engineering Additions</th>
+            <th style="width: 280px;">Observed Failure Modes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in prompt_log %}
+          <tr>
+            <td>
+              <span class="badge {% if entry.version == 'V3' %}badge-feasible{% else %}badge-neutral{% endif %}">{{ entry.version }}</span>
+            </td>
+            <td><strong>{{ entry.name }}</strong></td>
+            <td>
+              <ul style="padding-left: var(--space-4); margin: 0; font-size: var(--text-xs); line-height: 1.5;">
+                {% for tech in entry.techniques %}
+                <li>{{ tech }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td style="font-size: var(--text-xs); line-height: 1.5;">{{ entry.changes }}</td>
+            <td style="font-size: var(--text-xs); color: var(--muted); line-height: 1.5;">
+              <ul style="padding-left: var(--space-4); margin: 0;">
+                {% for failure in entry.failure_modes %}
+                <li>{{ failure }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Prompt Code Blocks -->
+  <section aria-labelledby="prompts-heading" style="margin-bottom: var(--space-8);">
+    <h2 id="prompts-heading" class="section-title">Exact Production Prompts</h2>
+    <p class="section-desc">The verbatim system and task prompts executed across the pipeline stages.</p>
+
+    <div class="grid-12">
+      <!-- V3 Production Scoring Prompt -->
+      <div class="col-12">
+        <div class="code-block-container" style="border-color: var(--accent);">
+          <div class="code-header" style="background-color: var(--accent-subtle);">
+            <div>
+              <span class="badge badge-feasible" style="margin-right: var(--space-2);">Production Standard</span>
+              <span class="code-title">PROMPT_V3 &bull; Calibrated Rubric with Context Anchoring & Injection Defense</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" data-copy-target="prompt-v3-code">Copy Prompt</button>
+          </div>
+          <pre id="prompt-v3-code" class="code-content">{{ scoring_prompts.V3 }}</pre>
+        </div>
+      </div>
+
+      <!-- V2 Milestone Prompt -->
+      <div class="col-6">
+        <div class="code-block-container">
+          <div class="code-header">
+            <div>
+              <span class="badge badge-neutral" style="margin-right: var(--space-2);">Milestone 2</span>
+              <span class="code-title">PROMPT_V2 &bull; Role + Rubric + XML Tags</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" data-copy-target="prompt-v2-code">Copy</button>
+          </div>
+          <pre id="prompt-v2-code" class="code-content" style="max-height: 320px;">{{ scoring_prompts.V2 }}</pre>
+        </div>
+      </div>
+
+      <!-- V1 Baseline Prompt -->
+      <div class="col-6">
+        <div class="code-block-container">
+          <div class="code-header">
+            <div>
+              <span class="badge badge-neutral" style="margin-right: var(--space-2);">Milestone 1</span>
+              <span class="code-title">PROMPT_V1 &bull; Zero-Shot Baseline</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" data-copy-target="prompt-v1-code">Copy</button>
+          </div>
+          <pre id="prompt-v1-code" class="code-content" style="max-height: 320px;">{{ scoring_prompts.V1 }}</pre>
+        </div>
+      </div>
+
+      <!-- Stage 1 Analysis Prompt -->
+      <div class="col-6">
+        <div class="code-block-container">
+          <div class="code-header">
+            <span class="code-title">STAGE 1 &bull; Domain & Research Question Extraction</span>
+            <button type="button" class="btn btn-secondary btn-sm" data-copy-target="prompt-analysis-code">Copy</button>
+          </div>
+          <pre id="prompt-analysis-code" class="code-content">{{ analysis_prompt }}</pre>
+        </div>
+      </div>
+
+      <!-- Stage 4 Report Prompt -->
+      <div class="col-6">
+        <div class="code-block-container">
+          <div class="code-header">
+            <span class="code-title">STAGE 4 &bull; Feasibility Synthesis Report</span>
+            <button type="button" class="btn btn-secondary btn-sm" data-copy-target="prompt-report-code">Copy</button>
+          </div>
+          <pre id="prompt-report-code" class="code-content">{{ report_prompt }}</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/copy.js"></script>
+{% endblock %}
+

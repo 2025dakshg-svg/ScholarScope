@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ScholarScope — Research Topic Feasibility Analyzer{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Calibrated feasibility evaluation for undergraduate research proposals using Gemini and Google Sheets.{% endblock %}">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  
+  <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  
+  <!-- Design Tokens, Global CSS & Print Stylesheet -->
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/print.css" media="print">
+  
+  <!-- Theme Controller (Executes early to prevent theme flashing) -->
+  <script src="/static/js/theme.js"></script>
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Accessible Skip Link -->
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- Shared Header -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="/" class="brand" aria-label="ScholarScope Homepage">
+        <img src="/static/logo.svg" alt="ScholarScope Logo" class="brand-logo-img" width="168" height="28">
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="nav-menu" aria-label="Primary Navigation">
+        <a href="/analyze" class="nav-link" {% if active_page == 'analyze' %}aria-current="page"{% endif %}>Analyze</a>
+        <a href="/how-it-works" class="nav-link" {% if active_page == 'how-it-works' %}aria-current="page"{% endif %}>How it works</a>
+        <a href="/prompts" class="nav-link" {% if active_page == 'prompts' %}aria-current="page"{% endif %}>Prompts</a>
+        <a href="/tests" class="nav-link" {% if active_page == 'tests' %}aria-current="page"{% endif %}>Tests</a>
+        <a href="/history" class="nav-link" {% if active_page == 'history' %}aria-current="page"{% endif %}>History</a>
+        <a href="/responsible-ai" class="nav-link" {% if active_page == 'responsible-ai' %}aria-current="page"{% endif %}>Responsible AI</a>
+      </nav>
+
+      <!-- Header Actions: Theme Switcher & Primary CTA -->
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" aria-label="Toggle visual theme" aria-pressed="false">
+          <!-- Populated by theme.js -->
+        </button>
+        <a href="/analyze" class="btn btn-primary btn-sm">Analyze a topic</a>
+        
+        <!-- Mobile Navigation Toggle -->
+        <button id="mobile-nav-toggle" class="mobile-nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav id="mobile-drawer" class="mobile-drawer" aria-label="Mobile Navigation">
+      <a href="/" class="nav-link" {% if active_page == 'home' %}aria-current="page"{% endif %}>Home</a>
+      <a href="/analyze" class="nav-link" {% if active_page == 'analyze' %}aria-current="page"{% endif %}>Analyze</a>
+      <a href="/how-it-works" class="nav-link" {% if active_page == 'how-it-works' %}aria-current="page"{% endif %}>How it works</a>
+      <a href="/prompts" class="nav-link" {% if active_page == 'prompts' %}aria-current="page"{% endif %}>Prompts</a>
+      <a href="/tests" class="nav-link" {% if active_page == 'tests' %}aria-current="page"{% endif %}>Tests</a>
+      <a href="/history" class="nav-link" {% if active_page == 'history' %}aria-current="page"{% endif %}>History</a>
+      <a href="/responsible-ai" class="nav-link" {% if active_page == 'responsible-ai' %}aria-current="page"{% endif %}>Responsible AI</a>
+    </nav>
+  </header>
+
+  <!-- Main Content Landmark -->
+  <main id="main" class="main-content" role="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Shared Academic Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand-summary">
+          <h2 class="footer-title">ScholarScope</h2>
+          <p>Research Topic Feasibility Analyzer &bull; B.Tech AI Tools & Prompt Engineering Mini Project</p>
+          <p>Student: <strong>Daksh Ghandaat</strong> (Roll No: 150096725209)</p>
+        </div>
+        <nav class="footer-links" aria-label="Footer Sitemaps">
+          <a href="/">Home</a>
+          <a href="/analyze">Analyze</a>
+          <a href="/how-it-works">How it works</a>
+          <a href="/prompts">Prompts</a>
+          <a href="/tests">Tests</a>
+          <a href="/history">History</a>
+          <a href="/responsible-ai">Responsible AI</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>Academic Decision Aid &bull; No automated scraping &bull; Strict Schema Enforcement</span>
+        <span>Configured Model: <span class="footer-model-pill">{{ model_name }}</span></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/js/nav.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+

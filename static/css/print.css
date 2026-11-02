@@ -1,0 +1,89 @@
+/* ==========================================================================
+   ScholarScope Print Stylesheet
+   Ensures feasibility evaluation reports print cleanly on paper / PDF export
+   ========================================================================== */
+
+@media print {
+  /* Hide interactive UI elements */
+  .site-header,
+  .mobile-drawer,
+  .site-footer,
+  .skip-link,
+  .theme-toggle-btn,
+  .btn,
+  .example-chips,
+  .form-group,
+  .stage-tracker-box,
+  .segmented-control,
+  .actions-toolbar {
+    display: none !important;
+  }
+
+  /* Reset layout for physical paper dimensions */
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .main-content {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .card {
+    border: 1px solid #CCCCCC !important;
+    box-shadow: none !important;
+    padding: 12pt !important;
+    margin-bottom: 14pt !important;
+    page-break-inside: avoid;
+  }
+
+  .page-title {
+    font-size: 18pt !important;
+    color: #000000 !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .page-subtitle {
+    font-size: 11pt !important;
+    color: #444444 !important;
+  }
+
+  .badge {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    background: transparent !important;
+  }
+
+  .score-bar-track {
+    border: 1px solid #888888 !important;
+    background: #EEEEEE !important;
+  }
+
+  .score-bar-fill {
+    background: #333333 !important;
+  }
+
+  /* Prevent awkward page cutoffs */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+}
+

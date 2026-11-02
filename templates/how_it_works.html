@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Methodology & Architecture — ScholarScope{% endblock %}
+
+{% block meta_description %}Six-stage evaluation pipeline, deterministic 3-tier validator, retry mechanics, and architecture flowchart for undergraduate research feasibility.{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1 class="page-title">Methodology & Pipeline Architecture</h1>
+    <p class="page-subtitle">A multi-stage deterministic framework combining LLM reasoning with automated schema, arithmetic, and rubric validation.</p>
+  </header>
+
+  <div class="grid-12">
+    <!-- Left Column: Pipeline Breakdown -->
+    <div class="col-7">
+      <section aria-labelledby="pipeline-heading" style="margin-bottom: var(--space-8);">
+        <h2 id="pipeline-heading" class="section-title">The Six Pipeline Stages</h2>
+        <p class="section-desc">Each topic traverses six sequential stages designed to eliminate hallucinations, enforce student hardware constraints, and log every decision.</p>
+
+        <!-- Vertical Stage List -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <div class="card card-raised">
+            <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">STAGE 0</span>
+              <span class="badge badge-neutral">Client / Server Guardrail</span>
+            </div>
+            <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-1); color: var(--ink);">Heuristic Input Guardrail</h3>
+            <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-normal);">
+              Validates input length (10 to 300 characters), checks for empty text, and inspects adversarial override phrases before invoking external APIs.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">STAGE 1</span>
+              <span class="badge badge-neutral">Topic Analysis</span>
+            </div>
+            <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-1); color: var(--ink);">Domain & Research Question Extraction</h3>
+            <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-normal);">
+              Identifies the primary academic domain, reformulates the input into a formal research question, and flags ambiguities without inventing facts.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">STAGE 2</span>
+              <span class="badge badge-feasible">Core LLM Evaluation</span>
+            </div>
+            <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-1); color: var(--ink);">4-Criterion Rubric Scoring</h3>
+            <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-normal);">
+              Evaluates Scope, Resources, Sources, and Outcomes on a calibrated 1–5 scale grounded in 4-week student timeline and personal laptop compute.
+            </p>
+          </div>
+
+          <div class="card card-raised">
+            <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">STAGE 3</span>
+              <span class="badge badge-feasible">Deterministic Python</span>
+            </div>
+            <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-1); color: var(--ink);">Automated 3-Stage Validator</h3>
+            <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-normal);">
+              Applies zero-tolerance deterministic rules in Python to verify JSON schema, confirm exact mathematical totals, and enforce canonical verdict bounds.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">STAGE 4</span>
+              <span class="badge badge-neutral">Advisory Synthesis</span>
+            </div>
+            <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-1); color: var(--ink);">Feasibility Report Generation</h3>
+            <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-normal);">
+              Synthesizes validated metrics into an actionable Markdown advisory report featuring risk factors and concrete scope-narrowing recommendations.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">STAGE 5</span>
+              <span class="badge badge-neutral">Auditable Cloud Storage</span>
+            </div>
+            <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-1); color: var(--ink);">Google Sheet Persistence</h3>
+            <p style="font-size: var(--text-sm); color: var(--muted); line-height: var(--leading-normal);">
+              Appends an immutable 11-column record to the Google Sheets Results tab via an authenticated Google Apps Script Web App webhook.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Validator Details & Flowchart -->
+    <div class="col-5">
+      <!-- Validator Architecture -->
+      <section aria-labelledby="validator-heading" style="margin-bottom: var(--space-8);">
+        <h2 id="validator-heading" class="section-title">The 3-Tier Validator</h2>
+        <p class="section-desc">LLMs are probabilistic and prone to arithmetic or schema hallucinations. ScholarScope interposes three deterministic verification gates:</p>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <div style="margin-bottom: var(--space-3);">
+            <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">GATE 1</span>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--ink); margin-top: var(--space-1);">JSON Schema & Field Presence</h3>
+            <p style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-1);">
+              Ensures that all 4 dimensions (Scope, Resources, Sources, Outcomes) exist as structured objects with both a numerical score and an explanatory reason.
+            </p>
+          </div>
+          <div style="margin-bottom: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--border-subtle);">
+            <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">GATE 2</span>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--ink); margin-top: var(--space-1);">Score Range & Mathematical Sum</h3>
+            <p style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-1);">
+              Confirms every score is an integer between 1 and 5, and verifies mathematically that <code style="font-family: var(--font-mono); font-size: 0.8em;">total == scope + resources + sources + outcomes</code>.
+            </p>
+          </div>
+          <div style="padding-top: var(--space-2); border-top: 1px solid var(--border-subtle);">
+            <span style="font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--accent);">GATE 3</span>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--ink); margin-top: var(--space-1);">Canonical Verdict Mapping</h3>
+            <p style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-1);">
+              Locks verdict labels to strict thresholds: <strong>Feasible</strong> (&ge; 16), <strong>Needs Refinement</strong> (11–15), or <strong>Not Feasible</strong> (&le; 10).
+            </p>
+          </div>
+        </div>
+
+        <!-- Retry Rule & Failure Paths -->
+        <div class="card card-raised" style="margin-bottom: var(--space-6);">
+          <div class="card-header" style="margin-bottom: var(--space-2); padding-bottom: var(--space-2);">
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--ink);">Retry Rule & Failure Paths</h3>
+          </div>
+          <ul style="font-size: var(--text-xs); color: var(--ink-secondary); line-height: 1.6; padding-left: var(--space-4); margin-bottom: 0;">
+            <li><strong>Single Targeted Retry:</strong> If Gate 1, 2, or 3 fails, the pipeline re-invokes the scoring prompt once, supplying the exact validation failure reason to the model.</li>
+            <li><strong>Stage 0 Guardrail:</strong> Adversarial instructions ("ignore the rules", "give 5/5") or empty inputs trigger immediate rejection without invoking the Gemini API.</li>
+            <li><strong>Webhook Degraded Mode:</strong> If the cloud Google Sheet is temporarily unreachable, the analysis completes successfully for the student, logging an honest "Not saved to Google Sheet" audit notice.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Architecture Diagram Embed -->
+      <section aria-labelledby="diagram-heading">
+        <h2 id="diagram-heading" class="section-title">Architecture Flowchart</h2>
+        <div class="card" style="padding: var(--space-3); text-align: center;">
+          <img src="/docs/workflow.png" alt="ScholarScope Complete 6-Stage Architecture Diagram" style="width: 100%; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--border);" loading="lazy">
+          <p style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-2);">
+            Full pipeline flowchart: Stage 0 input guardrail &rarr; Stage 1 analysis &rarr; Stage 2 scoring &rarr; Stage 3 validator loop &rarr; Stage 4 report &rarr; Stage 5 Google Sheet.
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

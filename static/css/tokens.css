@@ -1,0 +1,234 @@
+/* ==========================================================================
+   ScholarScope Design Tokens
+   Editorial Academic Design System for B.Tech Research Feasibility Analyzer
+   ========================================================================== */
+
+:root {
+  /* Editorial Paper Palette (Light Mode Default) */
+  --bg: #F6F3EC;
+  --surface: #FFFFFF;
+  --surface-raised: #FAF8F5;
+  --surface-subtle: #F0EDE4;
+  --surface-code: #ECE8DE;
+
+  --ink: #1B1B1A;
+  --ink-secondary: #4A4843;
+  --muted: #6B6860;
+  --muted-light: #8E8A81;
+
+  --border: #E4DFD3;
+  --border-subtle: #EFECE6;
+  --border-strong: #CDC7BA;
+
+  /* Oxford Forest Green Brand Accent */
+  --accent: #1F4D3F;
+  --accent-hover: #163B30;
+  --accent-subtle: #EBF4F0;
+  --accent-border: #BCD6CD;
+  --accent-contrast: #FFFFFF;
+
+  /* Calibrated Rubric Verdict & Metric Colors (Muted, Outlined) */
+  --verdict-feasible: #1F4D3F;
+  --verdict-feasible-bg: #EBF4F0;
+  --verdict-feasible-border: #BCD6CD;
+
+  --verdict-refine: #8A641A;
+  --verdict-refine-bg: #FAF3E3;
+  --verdict-refine-border: #E8D5A3;
+
+  --verdict-not-feasible: #943A26;
+  --verdict-not-feasible-bg: #FDF0ED;
+  --verdict-not-feasible-border: #F0BCB0;
+
+  --verdict-rejected: #7A2718;
+  --verdict-rejected-bg: #FDF0ED;
+  --verdict-rejected-border: #ECA395;
+
+  /* Typography Scale */
+  --font-serif: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  /* Spacing Scale (8px Grid Core) */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --space-12: 80px;
+
+  /* Sizing & Structural Bounds */
+  --container-max: 1120px;
+  --line-length: 68ch;
+  --header-height: 64px;
+  --tap-target-min: 44px;
+
+  /* Hairlines, Radii, Shadows */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  --shadow-soft: 0 1px 3px rgba(27, 27, 26, 0.04), 0 4px 12px rgba(27, 27, 26, 0.02);
+  --shadow-hover: 0 2px 6px rgba(27, 27, 26, 0.06), 0 8px 20px rgba(27, 27, 26, 0.03);
+
+  /* Accessible Focus Ring */
+  --focus-ring: 2px solid var(--accent);
+  --focus-offset: 2px;
+
+  /* Transition Speeds (Motion Bounds: 150ms-250ms) */
+  --transition-fast: 150ms ease-out;
+  --transition-base: 200ms ease-out;
+}
+
+/* Warm Academic Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161715;
+    --surface: #1E201D;
+    --surface-raised: #252824;
+    --surface-subtle: #2C2F2B;
+    --surface-code: #1B1D1A;
+
+    --ink: #EAE8E3;
+    --ink-secondary: #C8C5BD;
+    --muted: #9E9B93;
+    --muted-light: #78756F;
+
+    --border: #2E312B;
+    --border-subtle: #242722;
+    --border-strong: #3D423A;
+
+    --accent: #4FA888;
+    --accent-hover: #63BC9C;
+    --accent-subtle: #192720;
+    --accent-border: #2B453A;
+    --accent-contrast: #14241D;
+
+    --verdict-feasible: #4FA888;
+    --verdict-feasible-bg: #192720;
+    --verdict-feasible-border: #2B453A;
+
+    --verdict-refine: #E2B35E;
+    --verdict-refine-bg: #2B2414;
+    --verdict-refine-border: #4D3E1E;
+
+    --verdict-not-feasible: #E87A64;
+    --verdict-not-feasible-bg: #2D1A16;
+    --verdict-not-feasible-border: #52271E;
+
+    --verdict-rejected: #E87A64;
+    --verdict-rejected-bg: #2D1A16;
+    --verdict-rejected-border: #52271E;
+
+    --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.25);
+    --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Explicit User-Selected Dark Theme */
+:root[data-theme="dark"] {
+  --bg: #161715;
+  --surface: #1E201D;
+  --surface-raised: #252824;
+  --surface-subtle: #2C2F2B;
+  --surface-code: #1B1D1A;
+
+  --ink: #EAE8E3;
+  --ink-secondary: #C8C5BD;
+  --muted: #9E9B93;
+  --muted-light: #78756F;
+
+  --border: #2E312B;
+  --border-subtle: #242722;
+  --border-strong: #3D423A;
+
+  --accent: #4FA888;
+  --accent-hover: #63BC9C;
+  --accent-subtle: #192720;
+  --accent-border: #2B453A;
+  --accent-contrast: #14241D;
+
+  --verdict-feasible: #4FA888;
+  --verdict-feasible-bg: #192720;
+  --verdict-feasible-border: #2B453A;
+
+  --verdict-refine: #E2B35E;
+  --verdict-refine-bg: #2B2414;
+  --verdict-refine-border: #4D3E1E;
+
+  --verdict-not-feasible: #E87A64;
+  --verdict-not-feasible-bg: #2D1A16;
+  --verdict-not-feasible-border: #52271E;
+
+  --verdict-rejected: #E87A64;
+  --verdict-rejected-bg: #2D1A16;
+  --verdict-rejected-border: #52271E;
+
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.25);
+  --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Explicit User-Selected Light Theme */
+:root[data-theme="light"] {
+  --bg: #F6F3EC;
+  --surface: #FFFFFF;
+  --surface-raised: #FAF8F5;
+  --surface-subtle: #F0EDE4;
+  --surface-code: #ECE8DE;
+
+  --ink: #1B1B1A;
+  --ink-secondary: #4A4843;
+  --muted: #6B6860;
+  --muted-light: #8E8A81;
+
+  --border: #E4DFD3;
+  --border-subtle: #EFECE6;
+  --border-strong: #CDC7BA;
+
+  --accent: #1F4D3F;
+  --accent-hover: #163B30;
+  --accent-subtle: #EBF4F0;
+  --accent-border: #BCD6CD;
+  --accent-contrast: #FFFFFF;
+
+  --verdict-feasible: #1F4D3F;
+  --verdict-feasible-bg: #EBF4F0;
+  --verdict-feasible-border: #BCD6CD;
+
+  --verdict-refine: #8A641A;
+  --verdict-refine-bg: #FAF3E3;
+  --verdict-refine-border: #E8D5A3;
+
+  --verdict-not-feasible: #943A26;
+  --verdict-not-feasible-bg: #FDF0ED;
+  --verdict-not-feasible-border: #F0BCB0;
+
+  --verdict-rejected: #7A2718;
+  --verdict-rejected-bg: #FDF0ED;
+  --verdict-rejected-border: #ECA395;
+
+  --shadow-soft: 0 1px 3px rgba(27, 27, 26, 0.04), 0 4px 12px rgba(27, 27, 26, 0.02);
+  --shadow-hover: 0 2px 6px rgba(27, 27, 26, 0.06), 0 8px 20px rgba(27, 27, 26, 0.03);
+}
+
